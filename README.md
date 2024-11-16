@@ -72,7 +72,7 @@ The following translations are available:
 - Turkish (by RuyaSavascisi)
 - French (by kikipunk)
 - Polish (by plhappylemonpl)
-- German, Deutsch ~ 20 % done
+- German, Deutsch ~ 27 % done
 
 ## Built With
 
