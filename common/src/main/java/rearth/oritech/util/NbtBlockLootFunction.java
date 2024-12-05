@@ -13,8 +13,8 @@ import net.minecraft.loot.function.ConditionalLootFunction;
 import net.minecraft.loot.function.LootFunctionType;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.Text;
-import rearth.oritech.block.entity.machines.storage.SmallFluidTankEntity;
-import rearth.oritech.block.entity.machines.storage.SmallStorageBlockEntity;
+import rearth.oritech.block.entity.storage.SmallFluidTankEntity;
+import rearth.oritech.block.entity.storage.SmallStorageBlockEntity;
 import rearth.oritech.init.LootContent;
 
 import java.util.List;
@@ -41,7 +41,7 @@ public class NbtBlockLootFunction extends ConditionalLootFunction {
                 nbt.putUuid("unstackable", UUID.randomUUID());
             }
         } else if (blockEntity instanceof SmallStorageBlockEntity storageEntity) {
-            if (storageEntity.getEnergy(null).getStoredAmount() > 0) {
+            if (storageEntity.getStorage(null).getAmount() > 0) {
                 storageEntity.writeNbt(nbt, context.getWorld().getRegistryManager());
                 // make all non-empty storage blocks unstackable
                 nbt.putUuid("unstackable", UUID.randomUUID());

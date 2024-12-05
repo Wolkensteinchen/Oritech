@@ -2,23 +2,18 @@ package rearth.oritech;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
-import com.mojang.serialization.Codec;
-import earth.terrarium.common_storage_lib.data.DataManager;
-import earth.terrarium.common_storage_lib.data.DataManagerRegistry;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import rearth.oritech.block.blocks.pipes.EnergyPipeBlock;
-import rearth.oritech.block.blocks.pipes.FluidPipeBlock;
-import rearth.oritech.block.blocks.pipes.ItemPipeBlock;
-import rearth.oritech.block.blocks.pipes.SuperConductorBlock;
-import rearth.oritech.block.entity.machines.accelerator.AcceleratorParticleLogic;
+import rearth.oritech.block.blocks.pipes.energy.EnergyPipeBlock;
+import rearth.oritech.block.blocks.pipes.energy.SuperConductorBlock;
+import rearth.oritech.block.blocks.pipes.fluid.FluidPipeBlock;
+import rearth.oritech.block.blocks.pipes.item.ItemPipeBlock;
+import rearth.oritech.block.entity.accelerator.AcceleratorParticleLogic;
 import rearth.oritech.block.entity.pipes.GenericPipeInterfaceEntity;
 import rearth.oritech.client.init.ModScreens;
 import rearth.oritech.client.init.ParticleContent;
@@ -35,10 +30,7 @@ public final class Oritech {
     public static final String MOD_ID = "oritech";
     public static final Logger LOGGER = LoggerFactory.getLogger("oritech");
     public static final OritechConfig CONFIG = OritechConfig.createAndLoad();
-    
-    public static final DataManagerRegistry DATA_REGISTRY = new DataManagerRegistry(MOD_ID);
-    public static final DataManager<Long> ENERGY_CONTENT = DATA_REGISTRY.builder(() -> 0L).serialize(Codec.LONG).networkSerializer(PacketCodecs.VAR_LONG).withDataComponent().copyOnDeath().buildAndRegister("energy");
-    
+
     public static final Multimap<Identifier, Runnable> EVENT_MAP = initEventMap();
     
     public static Identifier id(String path) {
@@ -51,9 +43,7 @@ public final class Oritech {
         NetworkContent.registerChannels();
         ParticleContent.registerParticles();
         FeatureContent.initialize();
-        
-        DATA_REGISTRY.init();
-        
+
         // for pipe data
         ServerLifecycleEvents.SERVER_STARTED.register(Oritech::onServerStarted);
         

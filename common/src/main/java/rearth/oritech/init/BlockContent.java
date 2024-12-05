@@ -12,20 +12,22 @@ import net.minecraft.registry.Registry;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.util.Identifier;
 import rearth.oritech.Oritech;
-import rearth.oritech.block.blocks.MachineCoreBlock;
+import rearth.oritech.block.blocks.accelerator.*;
+import rearth.oritech.block.blocks.addons.InventoryProxyAddonBlock;
+import rearth.oritech.block.blocks.addons.MachineAddonBlock;
+import rearth.oritech.block.blocks.addons.MachineAddonBlock.AddonSettings;
+import rearth.oritech.block.blocks.addons.RedstoneAddonBlock;
+import rearth.oritech.block.blocks.addons.SteamBoilerAddonBlock;
 import rearth.oritech.block.blocks.arcane.*;
 import rearth.oritech.block.blocks.decorative.*;
-import rearth.oritech.block.blocks.machines.accelerator.*;
-import rearth.oritech.block.blocks.machines.addons.InventoryProxyAddonBlock;
-import rearth.oritech.block.blocks.machines.addons.MachineAddonBlock;
-import rearth.oritech.block.blocks.machines.addons.MachineAddonBlock.AddonSettings;
-import rearth.oritech.block.blocks.machines.addons.RedstoneAddonBlock;
-import rearth.oritech.block.blocks.machines.addons.SteamBoilerAddonBlock;
-import rearth.oritech.block.blocks.machines.generators.*;
-import rearth.oritech.block.blocks.machines.interaction.*;
-import rearth.oritech.block.blocks.machines.processing.*;
-import rearth.oritech.block.blocks.machines.storage.*;
-import rearth.oritech.block.blocks.pipes.*;
+import rearth.oritech.block.blocks.generators.*;
+import rearth.oritech.block.blocks.interaction.*;
+import rearth.oritech.block.blocks.pipes.energy.*;
+import rearth.oritech.block.blocks.pipes.fluid.*;
+import rearth.oritech.block.blocks.pipes.item.*;
+import rearth.oritech.block.blocks.processing.*;
+import rearth.oritech.block.blocks.reactor.*;
+import rearth.oritech.block.blocks.storage.*;
 import rearth.oritech.item.other.SmallFluidTankBlockItem;
 import rearth.oritech.util.ArchitecturyBlockRegistryContainer;
 import rearth.oritech.util.item.OritechGeoItem;
@@ -140,6 +142,8 @@ public class BlockContent implements ArchitecturyBlockRegistryContainer {
     public static final Block FERTILIZER_BLOCK = new FertilizerBlock(AbstractBlock.Settings.copy(Blocks.IRON_BLOCK).nonOpaque());
     @UseGeoBlockItem(scale = 0.7f)
     public static final Block TREEFELLER_BLOCK = new TreefellerBlock(AbstractBlock.Settings.copy(Blocks.IRON_BLOCK).nonOpaque());
+    @UseGeoBlockItem(scale = 0.7f)
+    public static final Block PIPE_BOOSTER_BLOCK = new PipeBoosterBlock(AbstractBlock.Settings.copy(Blocks.IRON_BLOCK).nonOpaque());
     
     @UseGeoBlockItem(scale = 0.7f)
     public static final Block ENCHANTMENT_CATALYST_BLOCK = new EnchantmentCatalystBlock(AbstractBlock.Settings.copy(Blocks.IRON_BLOCK).nonOpaque());
@@ -154,6 +158,9 @@ public class BlockContent implements ArchitecturyBlockRegistryContainer {
     public static final Block ACCELERATOR_CONTROLLER = new AcceleratorControllerBlock(AbstractBlock.Settings.copy(Blocks.IRON_BLOCK).nonOpaque());
     public static final Block ACCELERATOR_SENSOR = new AcceleratorSensorBlock(AbstractBlock.Settings.copy(Blocks.IRON_BLOCK).nonOpaque());
     public static final Block BLACK_HOLE_BLOCK = new BlackHoleBlock(AbstractBlock.Settings.copy(Blocks.END_PORTAL).luminance(item -> 12).nonOpaque());
+    // TODO geo item
+    // @UseGeoBlockItem(scale = 0.7f)
+    public static final Block PARTICLE_COLLECTOR_BLOCK = new ParticleCollectorBlock(AbstractBlock.Settings.copy(Blocks.GLASS).nonOpaque());
     
     @UseGeoBlockItem(scale = 0.7f)
     public static final Block PUMP_BLOCK = new PumpBlock(AbstractBlock.Settings.copy(Blocks.IRON_BLOCK).nonOpaque());
@@ -181,6 +188,32 @@ public class BlockContent implements ArchitecturyBlockRegistryContainer {
     public static final Block CAPACITOR_ADDON_EXTENDER = new MachineAddonBlock(AbstractBlock.Settings.copy(Blocks.IRON_BLOCK).nonOpaque(), AddonSettings.getDefaultSettings().withExtender(true).withNeedsSupport(false).withAddedCapacity(2_500_000).withAddedInsert(500));
     public static final Block STEAM_BOILER_ADDON = new SteamBoilerAddonBlock(AbstractBlock.Settings.copy(Blocks.IRON_BLOCK).nonOpaque(), AddonSettings.getDefaultSettings().withBoundingShape(MachineAddonBlock.STEAM_BOILER_ADDON_SHAPE));
     public static final Block MACHINE_REDSTONE_ADDON = new RedstoneAddonBlock(AbstractBlock.Settings.copy(Blocks.IRON_BLOCK).nonOpaque(), AddonSettings.getDefaultSettings().withBoundingShape(MachineAddonBlock.MACHINE_REDSTONE_ADDON_SHAPE));
+    
+    //region reactor
+    @NoBlockItem
+    public static final Block REACTOR_CONTROLLER = new ReactorControllerBlock(AbstractBlock.Settings.copy(Blocks.IRON_BLOCK));
+    @NoBlockItem
+    public static final Block REACTOR_WALL = new ReactorWallBlock(AbstractBlock.Settings.copy(Blocks.IRON_BLOCK));
+    @NoBlockItem
+    public static final Block REACTOR_ROD = new ReactorRodBlock(AbstractBlock.Settings.copy(Blocks.IRON_BLOCK), 1, 1);
+    @NoBlockItem
+    public static final Block REACTOR_DOUBLE_ROD = new ReactorRodBlock(AbstractBlock.Settings.copy(Blocks.IRON_BLOCK), 2, 4);
+    @NoBlockItem
+    public static final Block REACTOR_QUAD_ROD = new ReactorRodBlock(AbstractBlock.Settings.copy(Blocks.IRON_BLOCK), 4, 12);
+    @NoBlockItem
+    public static final Block REACTOR_VENT = new ReactorHeatVentBlock(AbstractBlock.Settings.copy(Blocks.IRON_BLOCK));
+    @NoBlockItem
+    public static final Block REACTOR_REFLECTOR = new ReactorReflectorBlock(AbstractBlock.Settings.copy(Blocks.IRON_BLOCK));
+    @NoBlockItem
+    public static final Block REACTOR_HEAT_PIPE = new ReactorHeatPipeBlock(AbstractBlock.Settings.copy(Blocks.IRON_BLOCK));
+    
+    // cooling cell, early game re-fillable component
+    
+    // lategame, second stage components:
+    // plasma conduit, advanced heat transfer system
+    // entropy dampener, reduce degradation rate of nearby components
+    // quantum stabilizer, massively increase heat capacity of reactor
+    //endregion
     
     //region metals
     @NoAutoDrop
@@ -231,7 +264,7 @@ public class BlockContent implements ArchitecturyBlockRegistryContainer {
     
     // region decorative
     @ItemContent.ItemGroupTarget(ItemContent.Groups.decorative)
-    public static final Block CEILING_LIGHT = new WallMountedLight(AbstractBlock.Settings.copy(Blocks.GLOWSTONE).nonOpaque(), 6);
+    public static final Block CEILING_LIGHT = new WallMountedLight(AbstractBlock.Settings.copy(Blocks.GLOWSTONE).nonOpaque(), 2);
     @ItemContent.ItemGroupTarget(ItemContent.Groups.decorative)
     public static final Block CEILING_LIGHT_HANGING = new WallMountedLight(AbstractBlock.Settings.copy(Blocks.GLOWSTONE).nonOpaque(), 12);
     @ItemContent.ItemGroupTarget(ItemContent.Groups.decorative)
@@ -274,7 +307,7 @@ public class BlockContent implements ArchitecturyBlockRegistryContainer {
     @ItemContent.ItemGroupTarget(ItemContent.Groups.decorative)
     public static final Block STEEL_BLOCK = new Block(AbstractBlock.Settings.copy(Blocks.IRON_BLOCK));
     @ItemContent.ItemGroupTarget(ItemContent.Groups.decorative)
-    public static final Block ENERGITE_BLOCK = new Block(AbstractBlock.Settings.copy(Blocks.IRON_BLOCK));
+    public static final Block ENERGITE_BLOCK = new Block(AbstractBlock.Settings.copy(Blocks.IRON_BLOCK).luminance(state -> 6));
     @ItemContent.ItemGroupTarget(ItemContent.Groups.decorative)
     public static final Block NICKEL_BLOCK = new Block(AbstractBlock.Settings.copy(Blocks.IRON_BLOCK));
     @ItemContent.ItemGroupTarget(ItemContent.Groups.decorative)
@@ -288,11 +321,11 @@ public class BlockContent implements ArchitecturyBlockRegistryContainer {
     @ItemContent.ItemGroupTarget(ItemContent.Groups.decorative)
     public static final Block DURATIUM_BLOCK = new Block(AbstractBlock.Settings.copy(Blocks.NETHERITE_BLOCK));
     @ItemContent.ItemGroupTarget(ItemContent.Groups.decorative)
-    public static final Block BIOMASS_BLOCK = new Block(AbstractBlock.Settings.copy(Blocks.IRON_BLOCK));
+    public static final Block BIOMASS_BLOCK = new Block(AbstractBlock.Settings.copy(Blocks.IRON_BLOCK).sounds(BlockSoundGroup.MOSS_BLOCK));
     @ItemContent.ItemGroupTarget(ItemContent.Groups.decorative)
     public static final Block PLASTIC_BLOCK = new Block(AbstractBlock.Settings.copy(Blocks.IRON_BLOCK).sounds(BlockSoundGroup.SHROOMLIGHT));
     @ItemContent.ItemGroupTarget(ItemContent.Groups.decorative)
-    public static final Block FLUXITE_BLOCK = new Block(AbstractBlock.Settings.copy(Blocks.IRON_BLOCK));
+    public static final Block FLUXITE_BLOCK = new Block(AbstractBlock.Settings.copy(Blocks.IRON_BLOCK).sounds(BlockSoundGroup.AMETHYST_BLOCK));
     @ItemContent.ItemGroupTarget(ItemContent.Groups.decorative)
     public static final Block SILICON_BLOCK = new SlimeBlock(AbstractBlock.Settings.copy(Blocks.SLIME_BLOCK));
     @ItemContent.ItemGroupTarget(ItemContent.Groups.decorative)

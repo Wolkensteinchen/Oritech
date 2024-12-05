@@ -8,10 +8,7 @@ import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags;
 import net.fabricmc.fabric.impl.resource.conditions.conditions.AllModsLoadedResourceCondition;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
-import net.minecraft.data.server.recipe.CraftingRecipeJsonBuilder;
-import net.minecraft.data.server.recipe.RecipeExporter;
-import net.minecraft.data.server.recipe.RecipeProvider;
-import net.minecraft.data.server.recipe.ShapedRecipeJsonBuilder;
+import net.minecraft.data.server.recipe.*;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.Item;
@@ -23,6 +20,7 @@ import net.minecraft.recipe.book.RecipeCategory;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.registry.tag.TagKey;
+import net.minecraft.util.Identifier;
 import nourl.mythicmetals.MythicMetals;
 import rearth.oritech.Oritech;
 import rearth.oritech.fabricgen.datagen.compat.AlloyForgeryRecipeGenerator;
@@ -108,15 +106,15 @@ public class RecipeGenerator extends FabricRecipeProvider {
     
     private void addDyes(RecipeExporter exporter) {
         addPulverizerRecipe(exporter, Ingredient.fromTag(TagContent.RAW_WHITE_DYE), Items.WHITE_DYE, "dyes/white");
-        addPulverizerRecipe(exporter, Ingredient.fromTag(TagContent.RAW_LIGHT_GRAY_DYE), Items.WHITE_DYE, "dyes/light_gray");
-        addPulverizerRecipe(exporter, Ingredient.fromTag(TagContent.RAW_BLACK_DYE), Items.WHITE_DYE, "dyes/black");
-        addPulverizerRecipe(exporter, Ingredient.fromTag(TagContent.RAW_RED_DYE), Items.WHITE_DYE, "dyes/red");
-        addPulverizerRecipe(exporter, Ingredient.fromTag(TagContent.RAW_ORANGE_DYE), Items.WHITE_DYE, "dyes/orange");
-        addPulverizerRecipe(exporter, Ingredient.fromTag(TagContent.RAW_YELLOW_DYE), Items.WHITE_DYE, "dyes/yellow");
-        addPulverizerRecipe(exporter, Ingredient.fromTag(TagContent.RAW_CYAN_DYE), Items.WHITE_DYE, "dyes/cyan");
-        addPulverizerRecipe(exporter, Ingredient.fromTag(TagContent.RAW_BLUE_DYE), Items.WHITE_DYE, "dyes/blue");
-        addPulverizerRecipe(exporter, Ingredient.fromTag(TagContent.RAW_MAGENTA_DYE), Items.WHITE_DYE, "dyes/magenta");
-        addPulverizerRecipe(exporter, Ingredient.fromTag(TagContent.RAW_PINK_DYE), Items.WHITE_DYE, "dyes/pink");
+        addPulverizerRecipe(exporter, Ingredient.fromTag(TagContent.RAW_LIGHT_GRAY_DYE), Items.LIGHT_GRAY_DYE, "dyes/light_gray");
+        addPulverizerRecipe(exporter, Ingredient.fromTag(TagContent.RAW_BLACK_DYE), Items.BLACK_DYE, "dyes/black");
+        addPulverizerRecipe(exporter, Ingredient.fromTag(TagContent.RAW_RED_DYE), Items.RED_DYE, "dyes/red");
+        addPulverizerRecipe(exporter, Ingredient.fromTag(TagContent.RAW_ORANGE_DYE), Items.ORANGE_DYE, "dyes/orange");
+        addPulverizerRecipe(exporter, Ingredient.fromTag(TagContent.RAW_YELLOW_DYE), Items.YELLOW_DYE, "dyes/yellow");
+        addPulverizerRecipe(exporter, Ingredient.fromTag(TagContent.RAW_CYAN_DYE), Items.CYAN_DYE, "dyes/cyan");
+        addPulverizerRecipe(exporter, Ingredient.fromTag(TagContent.RAW_BLUE_DYE), Items.BLUE_DYE, "dyes/blue");
+        addPulverizerRecipe(exporter, Ingredient.fromTag(TagContent.RAW_MAGENTA_DYE), Items.MAGENTA_DYE, "dyes/magenta");
+        addPulverizerRecipe(exporter, Ingredient.fromTag(TagContent.RAW_PINK_DYE), Items.PINK_DYE, "dyes/pink");
     }
     
     private void addDeepDrillOres(RecipeExporter exporter) {
@@ -170,6 +168,8 @@ public class RecipeGenerator extends FabricRecipeProvider {
         offerDrillRecipe(exporter, ItemContent.TARGET_DESIGNATOR, Ingredient.fromTag(TagContent.STEEL_INGOTS), Ingredient.ofItems(ItemContent.ELECTRUM_INGOT), Ingredient.ofItems(ItemContent.PROCESSING_UNIT), Ingredient.ofItems(ItemContent.PLASTIC_SHEET), "designator");
         // weed killer
         offerDrillRecipe(exporter, ItemContent.WEED_KILLER, Ingredient.ofItems(Items.ROTTEN_FLESH), Ingredient.ofItems(Items.ROTTEN_FLESH), Ingredient.ofItems(ItemContent.RAW_BIOPOLYMER), Ingredient.ofItems(Items.GLASS_BOTTLE), "weedex");
+        // wrench
+        offerWrenchRecipe(exporter, ItemContent.WRENCH, of(TagContent.STEEL_INGOTS), of(TagContent.NICKEL_INGOTS), "wrench");
         
         // helmet (enderic lens + machine plating)
         offerHelmetRecipe(exporter, ToolsContent.EXO_HELMET, Ingredient.fromTag(TagContent.MACHINE_PLATING), Ingredient.ofItems(ItemContent.ENDERIC_LENS), "exohelm");
@@ -280,6 +280,8 @@ public class RecipeGenerator extends FabricRecipeProvider {
         offerFurnaceRecipe(exporter, BlockContent.FERTILIZER_BLOCK.asItem(), Ingredient.fromTag(TagContent.MACHINE_PLATING), Ingredient.ofItems(ItemContent.MOTOR), Ingredient.fromTag(TagContent.SILICON), Ingredient.ofItems(ItemContent.PROCESSING_UNIT), Ingredient.ofItems(Items.COPPER_INGOT), "fertilizer");
         // tree feller
         offerGeneratorRecipe(exporter, BlockContent.TREEFELLER_BLOCK.asItem(), Ingredient.fromTag(TagContent.MACHINE_PLATING), Ingredient.ofItems(Items.IRON_AXE), Ingredient.ofItems(ItemContent.MOTOR), Ingredient.ofItems(ItemContent.ELECTRUM_INGOT), "treefeller");
+        // pipe booster
+        offerTankRecipe(exporter, BlockContent.PIPE_BOOSTER_BLOCK.asItem(), of(BlockContent.ITEM_PIPE), of(ItemContent.MOTOR), of(BlockContent.FLUID_PIPE), "booster");
         
         // machine frame
         offerMachineFrameRecipe(exporter, BlockContent.MACHINE_FRAME_BLOCK.asItem(), Ingredient.ofItems(Items.IRON_BARS), Ingredient.fromTag(TagContent.NICKEL_INGOTS), 16, "frame");
@@ -319,6 +321,9 @@ public class RecipeGenerator extends FabricRecipeProvider {
         offerGeneratorRecipe(exporter, BlockContent.ACCELERATOR_CONTROLLER.asItem(), Ingredient.ofItems(BlockContent.ACCELERATOR_MOTOR.asItem()), Ingredient.ofItems(ItemContent.FLUX_GATE), Ingredient.ofItems(Items.DROPPER), Ingredient.ofItems(ItemContent.DURATIUM_INGOT), "particlecontroller");
         // sensor
         offerTwoComponentRecipe(exporter, BlockContent.ACCELERATOR_SENSOR.asItem(), Ingredient.ofItems(BlockContent.ACCELERATOR_RING.asItem()), Ingredient.ofItems(Items.OBSERVER), "particlesensor");
+        // collector
+        offerTankRecipe(exporter, BlockContent.PARTICLE_COLLECTOR_BLOCK.asItem(), of(BlockContent.SUPERCONDUCTOR.asItem()), of(BlockContent.BIG_SOLAR_PANEL_BLOCK.asItem()), of(ItemContent.HEISENBERG_COMPENSATOR), "particlecollector");
+        
         
         // addons
         offerGeneratorRecipe(exporter, BlockContent.MACHINE_SPEED_ADDON.asItem(), Ingredient.fromTag(TagContent.MACHINE_PLATING), Ingredient.ofItems(ItemContent.MAGNETIC_COIL), Ingredient.ofItems(ItemContent.BIOSTEEL_INGOT), Ingredient.ofItems(ItemContent.PLASTIC_SHEET), "addon/speed");
@@ -434,20 +439,21 @@ public class RecipeGenerator extends FabricRecipeProvider {
     }
     
     private void addCompactingRecipes(RecipeExporter exporter) {
-        addCompactingRecipe(exporter, BlockContent.STEEL_BLOCK, ItemContent.STEEL_INGOT);
-        addCompactingRecipe(exporter, BlockContent.ENERGITE_BLOCK, ItemContent.ENERGITE_INGOT);
-        addCompactingRecipe(exporter, BlockContent.NICKEL_BLOCK, ItemContent.NICKEL_INGOT);
-        addCompactingRecipe(exporter, BlockContent.BIOSTEEL_BLOCK, ItemContent.BIOSTEEL_INGOT);
-        addCompactingRecipe(exporter, BlockContent.PLATINUM_BLOCK, ItemContent.PLATINUM_INGOT);
-        addCompactingRecipe(exporter, BlockContent.ADAMANT_BLOCK, ItemContent.ADAMANT_INGOT);
-        addCompactingRecipe(exporter, BlockContent.ELECTRUM_BLOCK, ItemContent.ELECTRUM_INGOT);
-        addCompactingRecipe(exporter, BlockContent.DURATIUM_BLOCK, ItemContent.DURATIUM_INGOT);
-        addCompactingRecipe(exporter, BlockContent.BIOMASS_BLOCK, ItemContent.BIOMASS);
-        addCompactingRecipe(exporter, BlockContent.PLASTIC_BLOCK, ItemContent.PLASTIC_SHEET);
-        addCompactingRecipe(exporter, BlockContent.FLUXITE_BLOCK, ItemContent.FLUXITE);
-        addCompactingRecipe(exporter, BlockContent.SILICON_BLOCK, ItemContent.SILICON);
-        addCompactingRecipe(exporter, BlockContent.RAW_NICKEL_BLOCK, ItemContent.RAW_NICKEL);
-        addCompactingRecipe(exporter, BlockContent.RAW_PLATINUM_BLOCK, ItemContent.RAW_PLATINUM);
+        addCompactingRecipe(exporter, BlockContent.STEEL_BLOCK, ItemContent.STEEL_INGOT, of(ItemTagGenerator.getIngotTag("steel")), of(ItemTagGenerator.getStorageBlockTag("steel")));
+        addCompactingRecipe(exporter, BlockContent.ENERGITE_BLOCK, ItemContent.ENERGITE_INGOT, of(ItemTagGenerator.getIngotTag("energite")), of(ItemTagGenerator.getStorageBlockTag("energite")));
+        addCompactingRecipe(exporter, BlockContent.NICKEL_BLOCK, ItemContent.NICKEL_INGOT, of(ItemTagGenerator.getIngotTag("nickel")), of(ItemTagGenerator.getStorageBlockTag("nickel")));
+        addCompactingRecipe(exporter, BlockContent.BIOSTEEL_BLOCK, ItemContent.BIOSTEEL_INGOT, of(ItemTagGenerator.getIngotTag("biosteel")), of(ItemTagGenerator.getStorageBlockTag("biosteel")));
+        addCompactingRecipe(exporter, BlockContent.PLATINUM_BLOCK, ItemContent.PLATINUM_INGOT, of(ItemTagGenerator.getIngotTag("platinum")), of(ItemTagGenerator.getStorageBlockTag("platinum")));
+        addCompactingRecipe(exporter, BlockContent.ADAMANT_BLOCK, ItemContent.ADAMANT_INGOT, of(ItemTagGenerator.getIngotTag("adamant")), of(ItemTagGenerator.getStorageBlockTag("adamant")));
+        addCompactingRecipe(exporter, BlockContent.ELECTRUM_BLOCK, ItemContent.ELECTRUM_INGOT, of(ItemTagGenerator.getIngotTag("electrum")), of(ItemTagGenerator.getStorageBlockTag("electrum")));
+        addCompactingRecipe(exporter, BlockContent.DURATIUM_BLOCK, ItemContent.DURATIUM_INGOT, of(ItemTagGenerator.getIngotTag("duratium")), of(ItemTagGenerator.getStorageBlockTag("duratium")));
+        addCompactingRecipe(exporter, BlockContent.BIOMASS_BLOCK, ItemContent.BIOMASS, of(ItemTagGenerator.getIngotTag("biomass")), of(ItemTagGenerator.getStorageBlockTag("biomass")));
+        addCompactingRecipe(exporter, BlockContent.PLASTIC_BLOCK, ItemContent.PLASTIC_SHEET, of(ItemTagGenerator.getIngotTag("plastic")), of(ItemTagGenerator.getStorageBlockTag("plastic")));
+        addCompactingRecipe(exporter, BlockContent.FLUXITE_BLOCK, ItemContent.FLUXITE, of(ItemTagGenerator.getIngotTag("fluxite")), of(ItemTagGenerator.getStorageBlockTag("fluxite")));
+        addCompactingRecipe(exporter, BlockContent.SILICON_BLOCK, ItemContent.SILICON, of(ItemTagGenerator.getIngotTag("silicon")), of(ItemTagGenerator.getStorageBlockTag("silicon")));
+        addCompactingRecipe(exporter, BlockContent.RAW_NICKEL_BLOCK, ItemContent.RAW_NICKEL, of(ItemTagGenerator.getIngotTag("raw_nickel")), of(ItemTagGenerator.getStorageBlockTag("raw_nickel")));
+        addCompactingRecipe(exporter, BlockContent.RAW_PLATINUM_BLOCK, ItemContent.RAW_PLATINUM, of(ItemTagGenerator.getIngotTag("raw_platinum")), of(ItemTagGenerator.getStorageBlockTag("raw_platinum")));
+        
     }
     
     private void addOreChains(RecipeExporter exporter) {
@@ -711,8 +717,23 @@ public class RecipeGenerator extends FabricRecipeProvider {
         exporter.accept(Oritech.id("assembler/" + suffix), entry, null);
     }
     
-    private void addCompactingRecipe(RecipeExporter exporter, ItemConvertible block, ItemConvertible item) {
-        RecipeProvider.offerReversibleCompactingRecipes(exporter, RecipeCategory.MISC, item, RecipeCategory.MISC, block, RecipeProvider.getRecipeName(block) + "block", null, RecipeProvider.getRecipeName(block) + "blockinv", null);
+    private void addCompactingRecipe(RecipeExporter exporter, ItemConvertible resBlock, ItemConvertible resItem, Ingredient itemIng, Ingredient blockIng) {
+        
+        
+        ShapelessRecipeJsonBuilder
+          .create(RecipeCategory.MISC, resItem, 9)
+          .input(blockIng)
+          .criterion(hasItem(resBlock), conditionsFromItem(resBlock))
+          .offerTo(exporter, Identifier.of(RecipeProvider.getRecipeName(resBlock) + "blockinv"));
+        ShapedRecipeJsonBuilder
+          .create(RecipeCategory.MISC, resBlock)
+          .input('#', itemIng)
+          .pattern("###")
+          .pattern("###")
+          .pattern("###")
+          .criterion(hasItem(resItem), conditionsFromItem(resItem))
+          .offerTo(exporter, Identifier.of(RecipeProvider.getRecipeName(resBlock) + "block"));
+        
     }
     
     private void addCentrifugeRecipe(RecipeExporter exporter, Ingredient input, Item result, float timeMultiplier, String suffix) {
@@ -913,6 +934,14 @@ public class RecipeGenerator extends FabricRecipeProvider {
                         .pattern(" a ")
                         .pattern("aea")
                         .pattern("mss");
+        builder.criterion(hasItem(output), conditionsFromItem(output)).offerTo(exporter, "crafting/" + suffix);
+    }
+    
+    public void offerWrenchRecipe(RecipeExporter exporter, Item output, Ingredient A, Ingredient B, String suffix) {
+        var builder = ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, output, 1).input('a', A).input('b', B)
+                        .pattern(" a ")
+                        .pattern(" ba")
+                        .pattern("a  ");
         builder.criterion(hasItem(output), conditionsFromItem(output)).offerTo(exporter, "crafting/" + suffix);
     }
     

@@ -1,7 +1,5 @@
 package rearth.oritech.client.ui;
 
-import earth.terrarium.common_storage_lib.energy.EnergyProvider;
-import earth.terrarium.common_storage_lib.storage.base.ValueStorage;
 import io.wispforest.owo.client.screens.SlotGenerator;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage;
@@ -19,6 +17,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import rearth.oritech.block.base.entity.UpgradableGeneratorBlockEntity;
 import rearth.oritech.client.init.ModScreens;
+import rearth.oritech.util.energy.EnergyApi;
 import rearth.oritech.util.FluidProvider;
 import rearth.oritech.util.ScreenProvider;
 
@@ -32,13 +31,13 @@ public class BasicMachineScreenHandler extends ScreenHandler {
     @NotNull
     protected final Inventory inventory;
     @NotNull
-    protected final ValueStorage energyStorage;
+    protected final EnergyApi.EnergyContainer energyStorage;
     
     @NotNull
     protected final BlockPos blockPos;
     
     @NotNull
-    protected final ScreenProvider screenData;
+    public final ScreenProvider screenData;
     
     @Nullable
     protected final SingleVariantStorage<FluidVariant> steamStorage;
@@ -49,7 +48,7 @@ public class BasicMachineScreenHandler extends ScreenHandler {
     protected final FluidProvider fluidProvider;
     
     protected BlockState machineBlock;
-    protected BlockEntity blockEntity;
+    public BlockEntity blockEntity;
     protected List<Integer> armorSlots;
     
     public BasicMachineScreenHandler(int syncId, PlayerInventory inventory, ModScreens.BasicData setupData) {
@@ -66,8 +65,8 @@ public class BasicMachineScreenHandler extends ScreenHandler {
         inventory.onOpen(playerInventory.player);
         this.playerInventory = playerInventory;
         
-        if (blockEntity instanceof EnergyProvider.BlockEntity energyProvider) {
-            energyStorage = energyProvider.getEnergy(null);
+        if (blockEntity instanceof EnergyApi.BlockProvider energyProvider) {
+            energyStorage = energyProvider.getStorage(null);
         } else {
             energyStorage = null;
         }
@@ -195,4 +194,9 @@ public class BasicMachineScreenHandler extends ScreenHandler {
     public @NotNull BlockPos getBlockPos() {
         return blockPos;
     }
+    
+    public boolean showRedstoneAddon() {
+        return screenData.hasRedstoneControlAvailable();
+    }
+    
 }

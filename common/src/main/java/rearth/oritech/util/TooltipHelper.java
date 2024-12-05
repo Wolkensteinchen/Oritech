@@ -1,10 +1,10 @@
 package rearth.oritech.util;
 
-import earth.terrarium.common_storage_lib.energy.EnergyProvider;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.resource.language.I18n;
+import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
@@ -12,8 +12,9 @@ import rearth.oritech.block.base.entity.ExpandableEnergyStorageBlockEntity;
 import rearth.oritech.block.base.entity.FrameInteractionBlockEntity;
 import rearth.oritech.block.base.entity.MachineBlockEntity;
 import rearth.oritech.block.base.entity.UpgradableGeneratorBlockEntity;
-import rearth.oritech.block.entity.machines.interaction.DeepDrillEntity;
-import rearth.oritech.block.entity.machines.processing.AtomicForgeBlockEntity;
+import rearth.oritech.block.entity.interaction.DeepDrillEntity;
+import rearth.oritech.block.entity.processing.AtomicForgeBlockEntity;
+import rearth.oritech.util.energy.EnergyApi;
 
 import java.text.NumberFormat;
 import java.util.List;
@@ -70,12 +71,17 @@ public class TooltipHelper {
             }
             
             
-            if (entity instanceof EnergyProvider.BlockEntity energyProvider) {
-                var maxStorage = getEnergyText(energyProvider.getEnergy(null).getCapacity());
+            if (entity instanceof EnergyApi.BlockProvider energyProvider) {
+                var maxStorage = getEnergyText(energyProvider.getStorage(null).getCapacity());
                 tooltip.add(Text.translatable("tooltip.oritech.machine_capacity_desc").formatted(Formatting.GRAY).append(Text.translatable("tooltip.oritech.energy_capacity", maxStorage).formatted(Formatting.GOLD)));
                 
                 if (energyProvider instanceof AtomicForgeBlockEntity || energyProvider instanceof DeepDrillEntity)
                     tooltip.add(Text.translatable("tooltip.oritech.needs_laser_power").formatted(Formatting.BOLD));
+                
+                var id = Registries.BLOCK.getId(block);
+                if (I18n.hasTranslation("tooltip.oritech." + id.getPath() + ".extra")) {
+                    tooltip.add(Text.translatable("tooltip.oritech." + id.getPath() + ".extra").formatted(Formatting.GRAY));
+                }
             }
         } else {
             tooltip.add(Text.translatable("tooltip.oritech.item_extra_info").formatted(Formatting.GRAY).formatted(Formatting.ITALIC));

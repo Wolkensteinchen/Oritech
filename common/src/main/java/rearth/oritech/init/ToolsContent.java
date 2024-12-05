@@ -16,12 +16,12 @@ import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.sound.SoundCategory;
-import rearth.oritech.Oritech;
 import rearth.oritech.item.tools.armor.*;
 import rearth.oritech.item.tools.harvesting.*;
 import rearth.oritech.item.tools.util.ArmorEventHandler;
 import rearth.oritech.item.tools.util.OritechEnergyItem;
 import rearth.oritech.util.ArchitecturyRegistryContainer;
+import rearth.oritech.util.energy.EnergyApi;
 
 import java.lang.reflect.Field;
 
@@ -73,10 +73,12 @@ public class ToolsContent implements ArchitecturyRegistryContainer<Item> {
         
         ItemGroups.add(targetGroup, value);
         
-        if (value instanceof OritechEnergyItem energyItem) {
+        if (EnergyApi.ITEM != null && value instanceof OritechEnergyItem energyItem) {
             var variantStack = new ItemStack(value);
-            variantStack.set(Oritech.ENERGY_CONTENT.componentType(), energyItem.getEnergyCapacity(variantStack));
+            variantStack.set(EnergyApi.ITEM.getEnergyComponent(), energyItem.getEnergyCapacity(variantStack));
             ItemGroups.add(targetGroup, variantStack);
+            
+            EnergyApi.ITEM.registerForItem(() -> value);
         }
         
     }

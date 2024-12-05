@@ -8,30 +8,28 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
+import rearth.oritech.block.entity.accelerator.*;
+import rearth.oritech.block.entity.addons.*;
 import rearth.oritech.block.entity.arcane.EnchanterBlockEntity;
 import rearth.oritech.block.entity.arcane.EnchantmentCatalystBlockEntity;
 import rearth.oritech.block.entity.arcane.SpawnerControllerBlockEntity;
 import rearth.oritech.block.entity.decorative.TechDoorBlockEntity;
-import rearth.oritech.block.entity.machines.MachineCoreEntity;
-import rearth.oritech.block.entity.machines.accelerator.AcceleratorControllerBlockEntity;
-import rearth.oritech.block.entity.machines.accelerator.AcceleratorMotorBlockEntity;
-import rearth.oritech.block.entity.machines.accelerator.AcceleratorSensorBlockEntity;
-import rearth.oritech.block.entity.machines.accelerator.BlackHoleBlockEntity;
-import rearth.oritech.block.entity.machines.addons.*;
-import rearth.oritech.block.entity.machines.generators.*;
-import rearth.oritech.block.entity.machines.interaction.*;
-import rearth.oritech.block.entity.machines.processing.*;
-import rearth.oritech.block.entity.machines.storage.CreativeStorageBlockEntity;
-import rearth.oritech.block.entity.machines.storage.LargeStorageBlockEntity;
-import rearth.oritech.block.entity.machines.storage.SmallFluidTankEntity;
-import rearth.oritech.block.entity.machines.storage.SmallStorageBlockEntity;
+import rearth.oritech.block.entity.generators.*;
+import rearth.oritech.block.entity.interaction.*;
 import rearth.oritech.block.entity.pipes.EnergyPipeInterfaceEntity;
 import rearth.oritech.block.entity.pipes.FluidPipeInterfaceEntity;
 import rearth.oritech.block.entity.pipes.ItemFilterBlockEntity;
 import rearth.oritech.block.entity.pipes.ItemPipeInterfaceEntity;
+import rearth.oritech.block.entity.processing.*;
+import rearth.oritech.block.entity.reactor.ReactorControllerBlockEntity;
+import rearth.oritech.block.entity.storage.CreativeStorageBlockEntity;
+import rearth.oritech.block.entity.storage.LargeStorageBlockEntity;
+import rearth.oritech.block.entity.storage.SmallFluidTankEntity;
+import rearth.oritech.block.entity.storage.SmallStorageBlockEntity;
 import rearth.oritech.util.ArchitecturyRegistryContainer;
 import rearth.oritech.util.FluidProvider;
 import rearth.oritech.util.InventoryProvider;
+import rearth.oritech.util.energy.EnergyApi;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -137,6 +135,9 @@ public class BlockEntitiesContent implements ArchitecturyRegistryContainer<Block
     @AssignSidedInventory
     public static final BlockEntityType<TreefellerBlockEntity> TREEFELLER_BLOCK_ENTITY = FabricBlockEntityTypeBuilder.create(TreefellerBlockEntity::new, BlockContent.TREEFELLER_BLOCK).build();
     
+    @AssignSidedEnergy
+    public static final BlockEntityType<PipeBoosterBlockEntity> PIPE_BOOSTER_BLOCK_ENTITY = FabricBlockEntityTypeBuilder.create(PipeBoosterBlockEntity::new, BlockContent.PIPE_BOOSTER_BLOCK).build();
+    
     @AssignSidedInventory
     public static final BlockEntityType<EnchantmentCatalystBlockEntity> ENCHANTMENT_CATALYST_BLOCK_ENTITY = FabricBlockEntityTypeBuilder.create(EnchantmentCatalystBlockEntity::new, BlockContent.ENCHANTMENT_CATALYST_BLOCK).build();
     
@@ -146,12 +147,17 @@ public class BlockEntitiesContent implements ArchitecturyRegistryContainer<Block
     
     public static final BlockEntityType<SpawnerControllerBlockEntity> SPAWNER_CONTROLLER_BLOCK_ENTITY = FabricBlockEntityTypeBuilder.create(SpawnerControllerBlockEntity::new, BlockContent.SPAWNER_CONTROLLER_BLOCK).build();
     
+    @AssignSidedEnergy
+    public static final BlockEntityType<ReactorControllerBlockEntity> REACTOR_CONTROLLER_BLOCK_ENTITY = FabricBlockEntityTypeBuilder.create(ReactorControllerBlockEntity::new, BlockContent.REACTOR_CONTROLLER).build();
+    
     @AssignSidedInventory
     public static final BlockEntityType<AcceleratorControllerBlockEntity> ACCELERATOR_CONTROLLER_BLOCK_ENTITY = FabricBlockEntityTypeBuilder.create(AcceleratorControllerBlockEntity::new, BlockContent.ACCELERATOR_CONTROLLER).build();
     public static final BlockEntityType<AcceleratorSensorBlockEntity> ACCELERATOR_SENSOR_BLOCK_ENTITY = FabricBlockEntityTypeBuilder.create(AcceleratorSensorBlockEntity::new, BlockContent.ACCELERATOR_SENSOR).build();
     @AssignSidedEnergy
     public static final BlockEntityType<AcceleratorMotorBlockEntity> ACCELERATOR_MOTOR_BLOCK_ENTITY = FabricBlockEntityTypeBuilder.create(AcceleratorMotorBlockEntity::new, BlockContent.ACCELERATOR_MOTOR).build();
     public static final BlockEntityType<BlackHoleBlockEntity> BLACK_HOLE_ENTITY = FabricBlockEntityTypeBuilder.create(BlackHoleBlockEntity::new, BlockContent.BLACK_HOLE_BLOCK).build();
+    @AssignSidedEnergy
+    public static final BlockEntityType<ParticleCollectorBlockEntity> PARTICLE_COLLECTOR_BLOCK_ENTITY = FabricBlockEntityTypeBuilder.create(ParticleCollectorBlockEntity::new, BlockContent.PARTICLE_COLLECTOR_BLOCK).build();
     
     public static final BlockEntityType<InventoryProxyAddonBlockEntity> INVENTORY_PROXY_ADDON_ENTITY = FabricBlockEntityTypeBuilder.create(InventoryProxyAddonBlockEntity::new, BlockContent.MACHINE_INVENTORY_PROXY_ADDON).build();
     
@@ -226,9 +232,8 @@ public class BlockEntitiesContent implements ArchitecturyRegistryContainer<Block
     @Override
     public void postProcessField(String namespace, BlockEntityType<?> value, String identifier, Field field, RegistrySupplier<BlockEntityType<?>> supplier) {
         
-        // TODO do I need this?
-//        if (field.isAnnotationPresent(AssignSidedEnergy.class))
-//            EnergyStorage.SIDED.registerForBlockEntity((blockEntity, direction) -> ((EnergyProvider) blockEntity).getStorage(direction), value);
+        if (EnergyApi.BLOCK != null && field.isAnnotationPresent(AssignSidedEnergy.class))
+            EnergyApi.BLOCK.registerBlockEntity(() -> value);
         
         if (field.isAnnotationPresent(AssignSidedFluid.class))
             FluidStorage.SIDED.registerForBlockEntity((blockEntity, direction) -> ((FluidProvider) blockEntity).getFluidStorage(direction), value);

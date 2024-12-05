@@ -12,9 +12,9 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3i;
 import rearth.oritech.Oritech;
 import rearth.oritech.block.base.entity.MultiblockMachineEntity;
-import rearth.oritech.block.blocks.machines.addons.MachineAddonBlock;
-import rearth.oritech.block.entity.machines.processing.FragmentForgeBlockEntity;
-import rearth.oritech.block.entity.machines.processing.PulverizerBlockEntity;
+import rearth.oritech.block.blocks.addons.MachineAddonBlock;
+import rearth.oritech.block.entity.processing.FragmentForgeBlockEntity;
+import rearth.oritech.block.entity.processing.PulverizerBlockEntity;
 import rearth.oritech.client.ui.components.BlockPreviewComponent;
 import rearth.oritech.init.BlockContent;
 import rearth.oritech.util.MachineAddonController;
@@ -159,7 +159,7 @@ public class UpgradableMachineScreen<S extends UpgradableMachineScreenHandler> e
             var relativePos = MultiblockMachineEntity.worldToRelativePos(handler.blockPos, addonBlockPos, facing);
             
             holoPreviewContainer.child(
-              new BlockPreviewComponent(addonBlock, addonBlockEntity, relativePos, rotationSpeed)
+              new BlockPreviewComponent(addonBlock, addonBlockEntity, relativePos, rotationSpeed, 20)
                 .sizing(Sizing.fixed(20))
                 .positioning(Positioning.absolute(previewX, previewY))
             );
@@ -206,7 +206,7 @@ public class UpgradableMachineScreen<S extends UpgradableMachineScreenHandler> e
             var dummyBlock = BlockContent.ADDON_INDICATOR_BLOCK.getDefaultState();
             
             holoPreviewContainer.child(
-              new BlockPreviewComponent(dummyBlock, null, relativePos, rotationSpeed)
+              new BlockPreviewComponent(dummyBlock, null, relativePos, rotationSpeed, 20)
                 .sizing(Sizing.fixed(20))
                 .positioning(Positioning.absolute(previewX, previewY))
             );
@@ -218,7 +218,7 @@ public class UpgradableMachineScreen<S extends UpgradableMachineScreenHandler> e
         
         // machine itself
         holoPreviewContainer.child(
-          new BlockPreviewComponent(handler.machineBlock, handler.blockEntity, new Vec3i(0, 0, 0), rotationSpeed)
+          new BlockPreviewComponent(handler.machineBlock, handler.blockEntity, new Vec3i(0, 0, 0), rotationSpeed, 20)
             .sizing(Sizing.fixed(20))
             .positioning(Positioning.absolute(previewX, previewY))
         );
